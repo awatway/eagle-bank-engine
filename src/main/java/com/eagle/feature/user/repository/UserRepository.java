@@ -22,13 +22,14 @@ public class UserRepository {
 
     @Transactional
     public UUID createUser(User user) {
-        String sql = "INSERT INTO users(name, email, phone) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO users(user_id, name, email, phone) VALUES (?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, user.getName());
-            ps.setString(2, user.getEmail());
-            ps.setString(3, user.getPhone());
+            ps.setObject(1, UUID.randomUUID());
+            ps.setString(2, user.getName());
+            ps.setString(3, user.getEmail());
+            ps.setString(4, user.getPhone());
             return ps;
         }, keyHolder);
         return (UUID) keyHolder.getKeyList().getFirst().get("user_id");

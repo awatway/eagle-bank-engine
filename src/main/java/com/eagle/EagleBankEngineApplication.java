@@ -9,5 +9,4 @@ public class EagleBankEngineApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(EagleBankEngineApplication.class, args);
 	}
-
 }

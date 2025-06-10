@@ -25,6 +25,7 @@ public class IdentityRepository {
 
     @Transactional
     public void createIdentity(UUID userId, String email, String password) {
-        jdbcTemplate.update("INSERT INTO identity(email, password, user_id) VALUES (?, ?, ?)", email, password, userId);
+        jdbcTemplate.update("INSERT INTO identity(identity_id, email, password, user_id) VALUES (?, ?, ?, ?)",
+                UUID.randomUUID(), email, password, userId);
     }
 }

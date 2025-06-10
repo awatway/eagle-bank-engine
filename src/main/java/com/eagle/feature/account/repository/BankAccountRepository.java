@@ -24,13 +24,14 @@ public class BankAccountRepository {
     @Transactional
     public BankAccount createAccount(UUID userId, BankAccount account) {
         String accountNumber = UUID.randomUUID().toString();
-        String sql = "INSERT INTO bank_account(account_number, balance, user_id) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO bank_account(account_id, account_number, balance, user_id) VALUES (?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, accountNumber);
-            ps.setObject(2, BigDecimal.ZERO);
-            ps.setObject(3, userId);
+            ps.setObject(1, UUID.randomUUID());
+            ps.setString(2, accountNumber);
+            ps.setObject(3, BigDecimal.ZERO);
+            ps.setObject(4, userId);
             return ps;
         }, keyHolder);
         account.setAccountId(UUID.fromString(keyHolder.getKey().toString()));
