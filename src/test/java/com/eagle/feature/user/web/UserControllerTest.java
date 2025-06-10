@@ -1,7 +1,8 @@
 package com.eagle.feature.user.web;
 
 import com.eagle.feature.user.service.UserService;
-import com.eagle.feature.user.web.model.User;
+import com.eagle.feature.user.web.model.CreateUserRequest;
+import com.eagle.feature.user.web.model.UserResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,21 +29,23 @@ class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private User user;
+    private CreateUserRequest createUserRequest;
+    private UserResponse userResponse;
 
     @BeforeEach
     void setUp() {
-        user = User.builder().build();
+        createUserRequest = CreateUserRequest.builder().build();
+        userResponse = UserResponse.builder().build();
     }
 
     @Test
     void createUser() throws Exception {
-        when(userService.createUser(any(User.class))).thenReturn(user);
+        when(userService.createUser(any(CreateUserRequest.class))).thenReturn(userResponse);
         mockMvc.perform(post("/v1/users")
-                        .content(objectMapper.writeValueAsString(user))
+                        .content(objectMapper.writeValueAsString(createUserRequest))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-        verify(userService).createUser(any(User.class));
+        verify(userService).createUser(any(CreateUserRequest.class));
     }
 
     @Test
@@ -54,9 +57,9 @@ class UserControllerTest {
     @Test
     void updateUser() throws Exception {
         mockMvc.perform(put("/v1/users/" + USER_ID)
-                        .content(objectMapper.writeValueAsString(user))
+                        .content(objectMapper.writeValueAsString(createUserRequest))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-        verify(userService).updateUser(eq(USER_ID), any(User.class));
+        verify(userService).updateUser(eq(USER_ID), any(CreateUserRequest.class));
     }
 }

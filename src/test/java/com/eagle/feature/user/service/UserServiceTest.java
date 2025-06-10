@@ -1,7 +1,9 @@
 package com.eagle.feature.user.service;
 
 import com.eagle.feature.user.repository.UserRepository;
-import com.eagle.feature.user.web.model.User;
+import com.eagle.feature.user.repository.domain.User;
+import com.eagle.feature.user.web.model.CreateUserRequest;
+import com.eagle.feature.user.web.model.Identity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,34 +17,48 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
-
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private IdentityService identityService;
     @InjectMocks
     private UserService userService;
+    private CreateUserRequest createUserRequest;
     private User user;
 
     @BeforeEach
     void setUp() {
-        user = User.builder().build();
+        createUserRequest = CreateUserRequest.builder()
+                .name("test")
+                .password("test")
+                .email("test")
+                .phone("test")
+                .build();
+        user = User.builder()
+                .name("test")
+                .email("test")
+                .phone("test")
+                .build();
     }
 
     @Test
     void createUser() {
-        when(userRepository.createUser(user)).thenReturn(user);
-        var response = userService.createUser(user);
+        when(userRepository.createUser(user)).thenReturn(USER_ID);
+        var response = userService.createUser(createUserRequest);
         verify(userRepository).createUser(user);
+        verify(identityService).createIdentity(USER_ID, Identity.builder().password("test").email("test").build());
     }
 
     @Test
     void getUser() {
+        when(userRepository.getUser(USER_ID)).thenReturn(user);
         var response = userService.getUser(USER_ID);
         verify(userRepository).getUser(USER_ID);
     }
 
     @Test
     void updateUser() {
-        userService.updateUser(USER_ID, user);
+        userService.updateUser(USER_ID, createUserRequest);
         verify(userRepository).updateUser(USER_ID, user);
     }
 }

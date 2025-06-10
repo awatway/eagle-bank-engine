@@ -1,6 +1,6 @@
 package com.eagle.feature.user.repository;
 
-import com.eagle.feature.user.web.model.User;
+import com.eagle.feature.user.repository.domain.User;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -21,7 +21,7 @@ public class UserRepository {
     }
 
     @Transactional
-    public User createUser(User user) {
+    public UUID createUser(User user) {
         String sql = "INSERT INTO users(name, email, phone) VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -31,8 +31,7 @@ public class UserRepository {
             ps.setString(3, user.getPhone());
             return ps;
         }, keyHolder);
-        user.setUserId((UUID) keyHolder.getKeyList().getFirst().get("user_id"));
-        return user;
+        return (UUID) keyHolder.getKeyList().getFirst().get("user_id");
     }
 
     @Transactional
