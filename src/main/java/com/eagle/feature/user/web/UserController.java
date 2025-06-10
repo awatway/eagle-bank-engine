@@ -2,6 +2,7 @@ package com.eagle.feature.user.web;
 
 import com.eagle.feature.user.service.UserService;
 import com.eagle.feature.user.web.model.CreateUserRequest;
+import com.eagle.feature.user.web.model.UpdateUserRequest;
 import com.eagle.feature.user.web.model.UserResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,7 +34,7 @@ public class UserController {
 
     @PutMapping("/{userId}")
     @Operation(summary = "Update user")
-    public void updateUser(@PathVariable UUID userId, @RequestBody CreateUserRequest createUserRequest) {
-        userService.updateUser(userId, createUserRequest);
+    public void updateUser(@PathVariable UUID userId, @RequestBody UpdateUserRequest updateUserRequest) {
+        userService.updateUser(userId, updateUserRequest);
     }
 }

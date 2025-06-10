@@ -4,6 +4,7 @@ import com.eagle.feature.user.repository.UserRepository;
 import com.eagle.feature.user.repository.domain.User;
 import com.eagle.feature.user.web.model.CreateUserRequest;
 import com.eagle.feature.user.web.model.Identity;
+import com.eagle.feature.user.web.model.UpdateUserRequest;
 import com.eagle.feature.user.web.model.UserResponse;
 import org.springframework.stereotype.Service;
 
@@ -32,9 +33,9 @@ public class UserService {
         return userResponse(userId, user);
     }
 
-    public void updateUser(UUID userId, CreateUserRequest createUserRequest) {
+    public void updateUser(UUID userId, UpdateUserRequest updateUserRequest) {
         //TODO: add validations
-        userRepository.updateUser(userId, user(createUserRequest));
+        userRepository.updateUser(userId, user(updateUserRequest));
     }
 
     private User user(CreateUserRequest createUserRequest) {
@@ -42,6 +43,14 @@ public class UserService {
                 .name(createUserRequest.getName())
                 .email(createUserRequest.getEmail())
                 .phone(createUserRequest.getPhone())
+                .build();
+    }
+
+    private User user(UpdateUserRequest updateUserRequest) {
+        return User.builder()
+                .name(updateUserRequest.getName())
+                .email(updateUserRequest.getEmail())
+                .phone(updateUserRequest.getPhone())
                 .build();
     }
 

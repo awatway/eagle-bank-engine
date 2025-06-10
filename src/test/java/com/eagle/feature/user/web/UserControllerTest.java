@@ -2,6 +2,7 @@ package com.eagle.feature.user.web;
 
 import com.eagle.feature.user.service.UserService;
 import com.eagle.feature.user.web.model.CreateUserRequest;
+import com.eagle.feature.user.web.model.UpdateUserRequest;
 import com.eagle.feature.user.web.model.UserResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,11 +31,13 @@ class UserControllerTest {
     private MockMvc mockMvc;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private CreateUserRequest createUserRequest;
+    private UpdateUserRequest updateUserRequest;
     private UserResponse userResponse;
 
     @BeforeEach
     void setUp() {
         createUserRequest = CreateUserRequest.builder().build();
+        updateUserRequest = UpdateUserRequest.builder().build();
         userResponse = UserResponse.builder().build();
     }
 
@@ -57,9 +60,9 @@ class UserControllerTest {
     @Test
     void updateUser() throws Exception {
         mockMvc.perform(put("/v1/users/" + USER_ID)
-                        .content(objectMapper.writeValueAsString(createUserRequest))
+                        .content(objectMapper.writeValueAsString(updateUserRequest))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-        verify(userService).updateUser(eq(USER_ID), any(CreateUserRequest.class));
+        verify(userService).updateUser(eq(USER_ID), any(UpdateUserRequest.class));
     }
 }

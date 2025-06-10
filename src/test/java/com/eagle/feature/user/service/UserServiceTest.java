@@ -4,6 +4,7 @@ import com.eagle.feature.user.repository.UserRepository;
 import com.eagle.feature.user.repository.domain.User;
 import com.eagle.feature.user.web.model.CreateUserRequest;
 import com.eagle.feature.user.web.model.Identity;
+import com.eagle.feature.user.web.model.UpdateUserRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +25,7 @@ class UserServiceTest {
     @InjectMocks
     private UserService userService;
     private CreateUserRequest createUserRequest;
+    private UpdateUserRequest updateUserRequest;
     private User user;
 
     @BeforeEach
@@ -31,6 +33,11 @@ class UserServiceTest {
         createUserRequest = CreateUserRequest.builder()
                 .name("test")
                 .password("test")
+                .email("test")
+                .phone("test")
+                .build();
+        updateUserRequest = UpdateUserRequest.builder()
+                .name("test")
                 .email("test")
                 .phone("test")
                 .build();
@@ -58,7 +65,7 @@ class UserServiceTest {
 
     @Test
     void updateUser() {
-        userService.updateUser(USER_ID, createUserRequest);
+        userService.updateUser(USER_ID, updateUserRequest);
         verify(userRepository).updateUser(USER_ID, user);
     }
 }
