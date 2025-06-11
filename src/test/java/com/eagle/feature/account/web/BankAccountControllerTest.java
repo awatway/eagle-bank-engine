@@ -1,7 +1,9 @@
 package com.eagle.feature.account.web;
 
 import com.eagle.feature.account.service.BankAccountService;
-import com.eagle.feature.account.web.model.BankAccount;
+import com.eagle.feature.account.web.model.BankAccountResponse;
+import com.eagle.feature.account.web.model.CreateBankAccountRequest;
+import com.eagle.feature.account.web.model.UpdateBankAccountRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,21 +30,25 @@ class BankAccountControllerTest {
     @Autowired
     private MockMvc mockMvc;
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private BankAccount bankAccount;
+    private CreateBankAccountRequest createBankAccountRequest;
+    private UpdateBankAccountRequest updateBankAccountRequest;
+    private BankAccountResponse bankAccountResponse;
 
     @BeforeEach
     void setUp() {
-        bankAccount = BankAccount.builder().build();
+        createBankAccountRequest = CreateBankAccountRequest.builder().name("my account").build();
+        updateBankAccountRequest = UpdateBankAccountRequest.builder().name("updated account").build();
+        bankAccountResponse = BankAccountResponse.builder().build();
     }
 
     @Test
     void createAccount() throws Exception {
-        when(bankAccountService.createAccount(eq(USER_ID), any(BankAccount.class))).thenReturn(bankAccount);
+        when(bankAccountService.createAccount(eq(USER_ID), any(CreateBankAccountRequest.class))).thenReturn(bankAccountResponse);
         mockMvc.perform(post("/v1/accounts/user/" + USER_ID)
-                        .content(objectMapper.writeValueAsString(bankAccount))
+                        .content(objectMapper.writeValueAsString(createBankAccountRequest))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-        verify(bankAccountService).createAccount(eq(USER_ID), any(BankAccount.class));
+        verify(bankAccountService).createAccount(eq(USER_ID), any(CreateBankAccountRequest.class));
     }
 
     @Test
@@ -53,11 +59,11 @@ class BankAccountControllerTest {
 
     @Test
     void updateAccount() throws Exception {
-        mockMvc.perform(put("/v1/accounts/" + ACCOUNT_ID)
-                        .content(objectMapper.writeValueAsString(bankAccount))
+        mockMvc.perform(patch("/v1/accounts/" + ACCOUNT_ID)
+                        .content(objectMapper.writeValueAsString(updateBankAccountRequest))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-        verify(bankAccountService).updateAccount(eq(ACCOUNT_ID), any(BankAccount.class));
+        verify(bankAccountService).updateAccount(eq(ACCOUNT_ID), any(UpdateBankAccountRequest.class));
     }
 
     @Test

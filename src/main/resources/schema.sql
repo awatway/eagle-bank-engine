@@ -17,13 +17,18 @@ CREATE TABLE identity (
 
 CREATE TABLE bank_account (
                               account_id UUID PRIMARY KEY,
+                              name VARCHAR(100),
+                              account_type VARCHAR(20),
                               account_number VARCHAR(20) UNIQUE NOT NULL,
-                              balance DOUBLE PRECISION NOT NULL DEFAULT 0,
+                              sort_code VARCHAR(20),
+                              balance DECIMAL(19,2) NOT NULL DEFAULT 0.00,
+                              currency VARCHAR(10),
                               user_id UUID NOT NULL,
                               created_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                               updated_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                               FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
+
 
 CREATE TABLE transaction (
                              transaction_id UUID PRIMARY KEY,
