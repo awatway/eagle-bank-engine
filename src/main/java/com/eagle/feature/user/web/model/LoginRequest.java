@@ -1,13 +1,15 @@
 package com.eagle.feature.user.web.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-public class Identity {
-    private Long id;
+@NoArgsConstructor
+@AllArgsConstructor
+public class LoginRequest {
     private String email;
     private String password;
-    private Long userId;
 }

@@ -1,9 +1,10 @@
 package com.eagle.feature.user.service;
 
-import com.eagle.feature.config.JwtConfig;
+import com.eagle.feature.auth.JwtProvider;
 import com.eagle.feature.exception.IdentityException;
 import com.eagle.feature.user.repository.IdentityRepository;
-import com.eagle.feature.user.web.model.Identity;
+import com.eagle.feature.user.repository.domain.Identity;
+import com.eagle.feature.user.web.model.LoginRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -13,14 +14,14 @@ import java.util.UUID;
 @Service
 public class IdentityService {
     private final IdentityRepository identityRepository;
-    private final JwtConfig jwtConfig;
+    private final JwtProvider jwtProvider;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public IdentityService(IdentityRepository identityRepository,
-                           JwtConfig jwtConfig,
+                           JwtProvider jwtProvider,
                            BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.identityRepository = identityRepository;
-        this.jwtConfig = jwtConfig;
+        this.jwtProvider = jwtProvider;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
@@ -28,17 +29,17 @@ public class IdentityService {
         identityRepository.createIdentity(userId, identity.getEmail(), bCryptPasswordEncoder.encode(identity.getPassword()));
     }
 
-    public String login(String email, String password) {
-        List<Identity> identities = identityRepository.getIdentityByEmail(email);
+    public String login(final LoginRequest loginRequest) {
+        List<Identity> identities = identityRepository.getIdentityByEmail(loginRequest.getEmail());
         if (identities.isEmpty()) {
             throw new IdentityException("Invalid email or password");
         }
 
-        Identity identity = identities.get(0);
-        if (!bCryptPasswordEncoder.matches(password, identity.getPassword())) {
+        Identity identity = identities.getFirst();
+        if (!bCryptPasswordEncoder.matches(loginRequest.getPassword(), identity.getPassword())) {
             throw new IdentityException("Invalid email or password");
         }
 
-        return jwtConfig.generateToken(identity.getUserId());
+        return jwtProvider.generateToken(identity.getUserId());
     }
 }

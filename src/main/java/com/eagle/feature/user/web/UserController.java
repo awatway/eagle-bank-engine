@@ -5,6 +5,7 @@ import com.eagle.feature.user.web.model.CreateUserRequest;
 import com.eagle.feature.user.web.model.UpdateUserRequest;
 import com.eagle.feature.user.web.model.UserResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,13 +28,13 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    @Operation(summary = "Fetch user by user id")
+    @Operation(summary = "Fetch user by user id", security = @SecurityRequirement(name = "bearerAuth"))
     public UserResponse getUser(@PathVariable UUID userId) {
         return userService.getUser(userId);
     }
 
     @PutMapping("/{userId}")
-    @Operation(summary = "Update user")
+    @Operation(summary = "Update user", security = @SecurityRequirement(name = "bearerAuth"))
     public void updateUser(@PathVariable UUID userId, @RequestBody UpdateUserRequest updateUserRequest) {
         userService.updateUser(userId, updateUserRequest);
     }

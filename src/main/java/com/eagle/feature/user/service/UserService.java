@@ -1,9 +1,10 @@
 package com.eagle.feature.user.service;
 
 import com.eagle.feature.user.repository.UserRepository;
+import com.eagle.feature.user.repository.domain.Identity;
 import com.eagle.feature.user.repository.domain.User;
 import com.eagle.feature.user.web.model.CreateUserRequest;
-import com.eagle.feature.user.web.model.Identity;
+import com.eagle.feature.user.web.model.LoginRequest;
 import com.eagle.feature.user.web.model.UpdateUserRequest;
 import com.eagle.feature.user.web.model.UserResponse;
 import org.springframework.stereotype.Service;

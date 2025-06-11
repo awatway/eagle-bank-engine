@@ -1,6 +1,7 @@
 package com.eagle.feature.user.web;
 
 import com.eagle.feature.user.service.IdentityService;
+import com.eagle.feature.user.web.model.LoginRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,8 +20,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> credentials) {
-        String token = identityService.login(credentials.get("email"), credentials.get("password"));
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        String token = identityService.login(loginRequest);
         return ResponseEntity.ok(Map.of("token", token));
     }
 }

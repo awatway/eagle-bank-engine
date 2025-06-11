@@ -1,6 +1,7 @@
 package com.eagle.feature.user.repository;
 
-import com.eagle.feature.user.web.model.Identity;
+import com.eagle.feature.user.repository.domain.Identity;
+import com.eagle.feature.user.web.model.LoginRequest;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
