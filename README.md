@@ -1,8 +1,8 @@
-# 🦅 Eagle Bank REST api
+## 🦅 Eagle Bank REST api
 
 REST API for a fictional bank called Eagle Bank
 
-## Tech Stack
+### Tech Stack
 
 - Java 17+
 - Spring Boot 3.x
@@ -12,9 +12,12 @@ REST API for a fictional bank called Eagle Bank
 - OpenAPI (via `springdoc-openapi`)
 - Maven
 
-## Run EagleBankEngineApplication
+
+### Run App
+```bash
 ./mvnw spring-boot:run
+```
 The app starts on: http://localhost:8080
 
-## Swagger url
+### Swagger url
 http://localhost:8080/swagger-ui/index.html
