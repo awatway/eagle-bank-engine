@@ -1,7 +1,8 @@
 package com.eagle.feature.account.repository;
 
 import com.eagle.feature.account.repository.domain.BankAccount;
-import com.eagle.feature.account.web.model.CreateBankAccountRequest;
+import com.eagle.feature.common.exception.ResourceNotFoundException;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -44,7 +45,11 @@ public class BankAccountRepository {
     @Transactional
     public BankAccount getAccount(UUID accountId) {
         String sql = "SELECT * FROM bank_account WHERE account_id = ?";
-        return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(BankAccount.class), accountId);
+        try {
+            return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(BankAccount.class), accountId);
+        } catch (DataAccessException e) {
+            throw new ResourceNotFoundException("Resource not found for accountId: " + accountId);
+        }
     }
 
     @Transactional
@@ -62,5 +67,25 @@ public class BankAccountRepository {
     @Transactional
     public void deleteAccount(UUID accountId) {
         jdbcTemplate.update("DELETE FROM bank_account WHERE account_id = ?", accountId);
+    }
+
+    public BigDecimal getBalance(UUID accountId, UUID userId) {
+        String sql = "SELECT balance FROM bank_account WHERE account_id = ? AND user_id = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{accountId, userId}, BigDecimal.class);
+    }
+
+    public void withdrawBalance(BigDecimal amount, UUID accountId) {
+        String sql = "UPDATE bank_account SET balance = balance - ?, updated_timestamp = CURRENT_TIMESTAMP WHERE account_id = ? ";
+        jdbcTemplate.update(sql, amount, accountId);
+    }
+
+    public void depositBalance(BigDecimal amount, UUID accountId) {
+        String sql = "UPDATE bank_account SET balance = balance + ?, updated_timestamp = CURRENT_TIMESTAMP WHERE account_id = ?";
+        jdbcTemplate.update(sql, amount, accountId);
+    }
+
+    public Integer countBankAccounts(UUID accountId, UUID userId) {
+        String sql = "SELECT COUNT(*) FROM bank_account WHERE account_id = ? AND user_id = ? ";
+        return jdbcTemplate.queryForObject(sql, Integer.class, accountId, userId);
     }
 }

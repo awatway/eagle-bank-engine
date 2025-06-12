@@ -2,7 +2,11 @@ package com.eagle.feature.common.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.http.*;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ProblemDetail;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,29 +14,29 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.nio.file.AccessDeniedException;
-import java.util.Map;
-import java.util.NoSuchElementException;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.*;
 
 @ControllerAdvice
 @Slf4j
-class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+class EagleBankExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(EmptyResultDataAccessException.class)
-    public ResponseEntity<?> handleNoSuchElement(NoSuchElementException ex, WebRequest request) {
-        return new ResponseEntity<>(Map.of("error", "Resource not found"), HttpStatus.NOT_FOUND);
+    @ExceptionHandler(IncorrectResultSizeDataAccessException.class)
+    public ResponseEntity<?> handleNoSuchElement(IncorrectResultSizeDataAccessException ex, WebRequest request) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(NOT_FOUND, ex.getMessage());
+        return ResponseEntity.of(problem).build();
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<?> handleIllegalArgument(IllegalArgumentException ex, WebRequest request) {
-        return new ResponseEntity<>(Map.of("error", ex.getMessage()), BAD_REQUEST);
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(BAD_REQUEST, ex.getMessage());
+        return ResponseEntity.of(problem).build();
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<?> handleAccessDenied(AccessDeniedException ex) {
-        return new ResponseEntity<>(Map.of("error", ex.getMessage()), HttpStatus.FORBIDDEN);
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(FORBIDDEN, ex.getMessage());
+        return ResponseEntity.of(problem).build();
     }
 
     @ExceptionHandler(Exception.class)

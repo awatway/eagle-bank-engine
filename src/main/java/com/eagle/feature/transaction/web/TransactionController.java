@@ -1,22 +1,56 @@
 package com.eagle.feature.transaction.web;
 
-import com.eagle.feature.transaction.web.model.Transaction;
+import com.eagle.feature.auth.JwtProvider;
+import com.eagle.feature.common.web.BaseController;
+import com.eagle.feature.transaction.service.TransactionService;
+import com.eagle.feature.transaction.web.model.TransactionRequest;
+import com.eagle.feature.transaction.web.model.TransactionResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
+import java.nio.file.AccessDeniedException;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
-@RequestMapping("/v1/transactions")
+@RequestMapping("/v1/accounts/{accountId}/transactions")
+@Tag(name = "Transactions", description = "Apis related to transactions")
 @SecurityRequirement(name = "bearerAuth")
-class TransactionController {
+public class TransactionController extends BaseController {
+    private final TransactionService transactionService;
 
-    @GetMapping("/account/{accountId}")
-    public List<Transaction> getTransactions(@PathVariable Long accountId) {
-        return Collections.emptyList();
+    public TransactionController(JwtProvider jwtProvider, TransactionService transactionService) {
+        super(jwtProvider);
+        this.transactionService = transactionService;
+    }
+
+    @PostMapping()
+    public ResponseEntity<?> createTransaction(@PathVariable UUID accountId,
+                                               @RequestBody @Valid TransactionRequest request,
+                                               @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) throws AccessDeniedException {
+        UUID userId = getAuthenticatedUserId(authHeader);
+        transactionService.createTransaction(accountId, userId, request);
+        return ResponseEntity.accepted().build();
+    }
+
+    @GetMapping()
+    public List<TransactionResponse> listTransactions(@PathVariable UUID accountId,
+                                                      @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) throws AccessDeniedException {
+
+        UUID userId = getAuthenticatedUserId(authHeader);
+        return transactionService.getTransactions(accountId, userId);
+    }
+
+    @GetMapping("/{transactionId}")
+    public TransactionResponse getTransactionById(@PathVariable UUID accountId,
+                                                  @PathVariable UUID transactionId,
+                                                  @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) throws AccessDeniedException {
+
+        UUID userId = getAuthenticatedUserId(authHeader);
+        return transactionService.getTransaction(transactionId, accountId, userId);
     }
 }

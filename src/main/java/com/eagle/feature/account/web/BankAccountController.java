@@ -18,7 +18,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/v1/accounts")
-@Tag(name = "Bank Accounts", description = "Apis related to accounts")
+@Tag(name = "Bank Accounts" , description = "Apis related to accounts")
 @SecurityRequirement(name = "bearerAuth")
 public class BankAccountController extends BaseController {
     private final BankAccountService bankAccountService;
@@ -56,4 +56,5 @@ public class BankAccountController extends BaseController {
     public void deleteAccount(@PathVariable UUID accountId) {
         bankAccountService.deleteAccount(accountId);
     }
+
 }

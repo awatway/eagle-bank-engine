@@ -15,12 +15,17 @@ public class BaseController {
     }
 
     protected void validateUserId(UUID userId, String authHeader) throws AccessDeniedException {
-        String token = authHeader.replace("Bearer ", "");
+        String token = authHeader.replace("Bearer " , "");
         UUID authenticatedUserId = jwtProvider.getUserId(token);
 
         if (!userId.equals(authenticatedUserId)) {
-            log.error("Not authorised to access user data for {}", authenticatedUserId);
+            log.error("Not authorised to access user data for {}" , authenticatedUserId);
             throw new AccessDeniedException("You are not authorized to access this user's data.");
         }
+    }
+
+    protected UUID getAuthenticatedUserId(String authHeader) {
+        String token = authHeader.replace("Bearer " , "");
+        return jwtProvider.getUserId(token);
     }
 }
