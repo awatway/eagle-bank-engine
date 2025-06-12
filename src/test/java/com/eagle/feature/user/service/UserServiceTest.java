@@ -1,10 +1,10 @@
 package com.eagle.feature.user.service;
 
+import com.eagle.feature.auth.repository.domain.Identity;
+import com.eagle.feature.auth.service.IdentityService;
 import com.eagle.feature.user.repository.UserRepository;
-import com.eagle.feature.user.repository.domain.Identity;
 import com.eagle.feature.user.repository.domain.User;
 import com.eagle.feature.user.web.model.CreateUserRequest;
-import com.eagle.feature.user.web.model.LoginRequest;
 import com.eagle.feature.user.web.model.UpdateUserRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

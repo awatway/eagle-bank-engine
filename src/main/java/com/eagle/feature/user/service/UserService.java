@@ -1,13 +1,14 @@
 package com.eagle.feature.user.service;
 
+import com.eagle.feature.auth.repository.domain.Identity;
+import com.eagle.feature.auth.service.IdentityService;
 import com.eagle.feature.user.repository.UserRepository;
-import com.eagle.feature.user.repository.domain.Identity;
 import com.eagle.feature.user.repository.domain.User;
 import com.eagle.feature.user.web.model.CreateUserRequest;
-import com.eagle.feature.user.web.model.LoginRequest;
 import com.eagle.feature.user.web.model.UpdateUserRequest;
 import com.eagle.feature.user.web.model.UserResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -21,6 +22,7 @@ public class UserService {
         this.identityService = identityService;
     }
 
+    @Transactional
     public UserResponse createUser(CreateUserRequest createUserRequest) {
         User user = user(createUserRequest);
         UUID userId = userRepository.createUser(user);
@@ -33,6 +35,7 @@ public class UserService {
         return userResponse(userId, user);
     }
 
+    @Transactional
     public void updateUser(UUID userId, UpdateUserRequest updateUserRequest) {
         userRepository.updateUser(userId, user(updateUserRequest));
     }

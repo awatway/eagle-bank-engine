@@ -1,7 +1,6 @@
 package com.eagle.feature.common.exception;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
@@ -36,6 +35,12 @@ class EagleBankExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<?> handleAccessDenied(AccessDeniedException ex) {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(FORBIDDEN, ex.getMessage());
+        return ResponseEntity.of(problem).build();
+    }
+
+    @ExceptionHandler(InsufficientFundsException.class)
+    public ResponseEntity<?> handleInsufficientFundsException(InsufficientFundsException ex) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(UNPROCESSABLE_ENTITY, ex.getMessage());
         return ResponseEntity.of(problem).build();
     }
 

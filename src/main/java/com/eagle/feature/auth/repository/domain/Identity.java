@@ -1,4 +1,4 @@
-package com.eagle.feature.user.repository.domain;
+package com.eagle.feature.auth.repository.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

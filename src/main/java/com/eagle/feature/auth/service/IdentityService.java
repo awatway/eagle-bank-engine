@@ -1,10 +1,10 @@
-package com.eagle.feature.user.service;
+package com.eagle.feature.auth.service;
 
 import com.eagle.feature.auth.JwtProvider;
+import com.eagle.feature.auth.repository.IdentityRepository;
+import com.eagle.feature.auth.repository.domain.Identity;
+import com.eagle.feature.auth.web.model.LoginRequest;
 import com.eagle.feature.common.exception.IdentityException;
-import com.eagle.feature.user.repository.IdentityRepository;
-import com.eagle.feature.user.repository.domain.Identity;
-import com.eagle.feature.user.web.model.LoginRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 

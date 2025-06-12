@@ -1,4 +1,4 @@
-package com.eagle.feature.user.web.model;
+package com.eagle.feature.auth.web.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

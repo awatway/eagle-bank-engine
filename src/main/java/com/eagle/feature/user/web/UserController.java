@@ -7,10 +7,14 @@ import com.eagle.feature.user.web.model.CreateUserRequest;
 import com.eagle.feature.user.web.model.UpdateUserRequest;
 import com.eagle.feature.user.web.model.UserResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.AccessDeniedException;
@@ -30,8 +34,14 @@ public class UserController extends BaseController {
 
     @PostMapping
     @Operation(summary = "Create a new user")
-    public UserResponse createUser(@Valid @RequestBody CreateUserRequest createUserRequest) {
-        return userService.createUser(createUserRequest);
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Created"),
+            @ApiResponse(responseCode = "400", description = "Validation error"),
+            @ApiResponse(responseCode = "500", description = "Unexpected error")
+    })
+    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody CreateUserRequest createUserRequest) {
+        UserResponse response = userService.createUser(createUserRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/{userId}")

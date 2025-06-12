@@ -1,6 +1,7 @@
 package com.eagle.feature.transaction.service;
 
 import com.eagle.feature.account.repository.BankAccountRepository;
+import com.eagle.feature.common.exception.InsufficientFundsException;
 import com.eagle.feature.transaction.repository.TransactionRepository;
 import com.eagle.feature.transaction.repository.domain.Transaction;
 import com.eagle.feature.transaction.web.model.TransactionRequest;
@@ -39,7 +40,7 @@ public class TransactionService {
 
         if (TransactionType.WITHDRAW == request.getType()) {
             if (balance.compareTo(amount) < 0) {
-                throw new IllegalArgumentException("Insufficient funds");
+                throw new InsufficientFundsException("Insufficient funds");
             }
             bankAccountRepository.withdrawBalance(amount, accountId);
 

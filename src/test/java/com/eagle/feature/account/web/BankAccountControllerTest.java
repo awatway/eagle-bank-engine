@@ -60,7 +60,7 @@ class BankAccountControllerTest {
                         .content(objectMapper.writeValueAsString(createBankAccountRequest))
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", "Bearer " + token))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
         verify(bankAccountService).createAccount(eq(USER_ID), any(CreateBankAccountRequest.class));
     }
 

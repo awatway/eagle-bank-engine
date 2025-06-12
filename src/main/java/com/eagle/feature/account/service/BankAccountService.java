@@ -7,6 +7,7 @@ import com.eagle.feature.account.web.model.BankAccountResponse;
 import com.eagle.feature.account.web.model.CreateBankAccountRequest;
 import com.eagle.feature.account.web.model.UpdateBankAccountRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -25,6 +26,7 @@ public class BankAccountService {
         this.bankAccountRepository = bankAccountRepository;
     }
 
+    @Transactional
     public BankAccountResponse createAccount(UUID userId, CreateBankAccountRequest createBankAccountRequest) {
         BankAccount bankAccount = bankAccount(userId, createBankAccountRequest.getAccountType(), createBankAccountRequest.getName(),
                 generateAccountNumber(), generateSortCode());
@@ -37,6 +39,7 @@ public class BankAccountService {
         return bankAccountResponse(bankAccount.getUserId(), accountId, bankAccount);
     }
 
+    @Transactional
     public void updateAccount(UUID accountId, UpdateBankAccountRequest updateBankAccountRequest) {
         BankAccount bankAccount = bankAccountRepository.getAccount(accountId);
         if (bankAccount != null) {
@@ -46,6 +49,7 @@ public class BankAccountService {
         }
     }
 
+    @Transactional
     public void deleteAccount(UUID accountId) {
         //TODO: validations -- is balance zero?
         bankAccountRepository.deleteAccount(accountId);

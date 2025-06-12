@@ -15,4 +15,5 @@ public class TransactionRequest {
     private BigDecimal amount;
     @NotNull
     private TransactionType type;
+    private String currency;
 }

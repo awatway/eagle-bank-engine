@@ -8,7 +8,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
@@ -23,7 +22,6 @@ public class BankAccountRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    @Transactional
     public UUID createAccount(UUID userId, BankAccount bankAccount) {
         String sql = "INSERT INTO bank_account (account_id, name, account_type, account_number, sort_code, balance, currency, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -42,7 +40,6 @@ public class BankAccountRepository {
         return (UUID) keyHolder.getKeyList().getFirst().get("account_id");
     }
 
-    @Transactional
     public BankAccount getAccount(UUID accountId) {
         String sql = "SELECT * FROM bank_account WHERE account_id = ?";
         try {
@@ -52,7 +49,6 @@ public class BankAccountRepository {
         }
     }
 
-    @Transactional
     public void updateAccount(UUID accountId, BankAccount account) {
         String sql = "UPDATE bank_account SET name = ?, account_type = ?, balance = ?, " +
                 "updated_timestamp = CURRENT_TIMESTAMP WHERE account_id = ?";
@@ -64,7 +60,6 @@ public class BankAccountRepository {
         );
     }
 
-    @Transactional
     public void deleteAccount(UUID accountId) {
         jdbcTemplate.update("DELETE FROM bank_account WHERE account_id = ?", accountId);
     }

@@ -6,7 +6,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -20,7 +19,6 @@ public class UserRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    @Transactional
     public UUID createUser(User user) {
         String sql = "INSERT INTO users(user_id, name, email, phone) VALUES (?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -35,13 +33,11 @@ public class UserRepository {
         return (UUID) keyHolder.getKeyList().getFirst().get("user_id");
     }
 
-    @Transactional
     public User getUser(UUID userId) {
         String sql = "SELECT * FROM users WHERE user_id = ?";
         return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(User.class), userId);
     }
 
-    @Transactional
     public void updateUser(UUID userId, User user) {
         String sql = "UPDATE users SET name = ?, phone = ? WHERE user_id = ?";
         jdbcTemplate.update(sql, user.getName(), user.getPhone(), userId);

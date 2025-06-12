@@ -1,7 +1,6 @@
-package com.eagle.feature.user.repository;
+package com.eagle.feature.auth.repository;
 
-import com.eagle.feature.user.repository.domain.Identity;
-import com.eagle.feature.user.web.model.LoginRequest;
+import com.eagle.feature.auth.repository.domain.Identity;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -24,7 +23,6 @@ public class IdentityRepository {
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Identity.class), email);
     }
 
-    @Transactional
     public void createIdentity(UUID userId, String email, String password) {
         jdbcTemplate.update("INSERT INTO identity(identity_id, email, password, user_id) VALUES (?, ?, ?, ?)",
                 UUID.randomUUID(), email, password, userId);
