@@ -1,5 +1,6 @@
 package com.eagle.feature.auth;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -34,6 +35,20 @@ public class JwtProvider {
             return true;
         } catch (JwtException ex) {
             return false;
+        }
+    }
+
+    public UUID getUserId(String token) {
+        try {
+            Claims claims = Jwts.parser()
+                    .verifyWith((SecretKey) key)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+
+            return UUID.fromString(claims.getSubject()); // userId
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new RuntimeException("Invalid or expired token", e);
         }
     }
 }

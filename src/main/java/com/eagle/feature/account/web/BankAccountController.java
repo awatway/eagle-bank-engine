@@ -4,29 +4,37 @@ import com.eagle.feature.account.service.BankAccountService;
 import com.eagle.feature.account.web.model.BankAccountResponse;
 import com.eagle.feature.account.web.model.CreateBankAccountRequest;
 import com.eagle.feature.account.web.model.UpdateBankAccountRequest;
+import com.eagle.feature.auth.JwtProvider;
+import com.eagle.feature.common.web.BaseController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.AccessDeniedException;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/v1/accounts")
 @Tag(name = "Bank Accounts", description = "Apis related to accounts")
 @SecurityRequirement(name = "bearerAuth")
-public class BankAccountController {
+public class BankAccountController extends BaseController {
     private final BankAccountService bankAccountService;
 
-    public BankAccountController(BankAccountService bankAccountService) {
+    public BankAccountController(JwtProvider jwtProvider,
+                                 BankAccountService bankAccountService) {
+        super(jwtProvider);
         this.bankAccountService = bankAccountService;
     }
 
     @PostMapping("/user/{userId}")
     @Operation(summary = "Create a new bank account for the user")
     public BankAccountResponse createAccount(@PathVariable UUID userId,
-                                             @Valid @RequestBody CreateBankAccountRequest account) {
+                                             @Valid @RequestBody CreateBankAccountRequest account,
+                                             @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) throws AccessDeniedException {
+        validateUserId(userId, authHeader);
         return bankAccountService.createAccount(userId, account);
     }
 

@@ -25,7 +25,7 @@ public class JwtFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
         String method = request.getMethod();
         // Skip JWT check for POST /users (registration) and POST /auth/login
-        if ((path.equals("/v1/users") && method.equals("POST")) ||
+        if ((path.equals("/actuator")) || (path.equals("/v1/users") && method.equals("POST")) ||
                 (path.equals("/v1/auth/login") && method.equals("POST"))) {
             filterChain.doFilter(request, response);
             return;

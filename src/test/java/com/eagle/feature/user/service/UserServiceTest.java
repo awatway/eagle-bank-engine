@@ -39,7 +39,6 @@ class UserServiceTest {
                 .build();
         updateUserRequest = UpdateUserRequest.builder()
                 .name("test")
-                .email("test")
                 .phone("test")
                 .build();
         user = User.builder()
@@ -66,6 +65,10 @@ class UserServiceTest {
 
     @Test
     void updateUser() {
+        user = User.builder()
+                .name("test")
+                .phone("test")
+                .build();
         userService.updateUser(USER_ID, updateUserRequest);
         verify(userRepository).updateUser(USER_ID, user);
     }

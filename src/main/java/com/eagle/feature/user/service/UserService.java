@@ -22,7 +22,6 @@ public class UserService {
     }
 
     public UserResponse createUser(CreateUserRequest createUserRequest) {
-        //TODO: add validations
         User user = user(createUserRequest);
         UUID userId = userRepository.createUser(user);
         identityService.createIdentity(userId, identity(createUserRequest));
@@ -35,7 +34,6 @@ public class UserService {
     }
 
     public void updateUser(UUID userId, UpdateUserRequest updateUserRequest) {
-        //TODO: add validations
         userRepository.updateUser(userId, user(updateUserRequest));
     }
 
@@ -50,7 +48,6 @@ public class UserService {
     private User user(UpdateUserRequest updateUserRequest) {
         return User.builder()
                 .name(updateUserRequest.getName())
-                .email(updateUserRequest.getEmail())
                 .phone(updateUserRequest.getPhone())
                 .build();
     }

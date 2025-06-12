@@ -43,7 +43,7 @@ public class UserRepository {
 
     @Transactional
     public void updateUser(UUID userId, User user) {
-        String sql = "UPDATE users SET name = ?, email = ?, phone = ? WHERE user_id = ?";
-        jdbcTemplate.update(sql, user.getName(), user.getEmail(), user.getPhone(), userId);
+        String sql = "UPDATE users SET name = ?, phone = ? WHERE user_id = ?";
+        jdbcTemplate.update(sql, user.getName(), user.getPhone(), userId);
     }
 }

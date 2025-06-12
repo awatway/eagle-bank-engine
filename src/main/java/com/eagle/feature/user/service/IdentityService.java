@@ -1,7 +1,7 @@
 package com.eagle.feature.user.service;
 
 import com.eagle.feature.auth.JwtProvider;
-import com.eagle.feature.exception.IdentityException;
+import com.eagle.feature.common.exception.IdentityException;
 import com.eagle.feature.user.repository.IdentityRepository;
 import com.eagle.feature.user.repository.domain.Identity;
 import com.eagle.feature.user.web.model.LoginRequest;

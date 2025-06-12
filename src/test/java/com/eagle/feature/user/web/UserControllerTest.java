@@ -1,5 +1,6 @@
 package com.eagle.feature.user.web;
 
+import com.eagle.feature.auth.JwtProvider;
 import com.eagle.feature.user.service.UserService;
 import com.eagle.feature.user.web.model.CreateUserRequest;
 import com.eagle.feature.user.web.model.UpdateUserRequest;
@@ -16,7 +17,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static com.eagle.feature.common.TestIds.USER_ID;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -25,6 +25,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(UserController.class)
 class UserControllerTest {
+    @MockitoBean
+    private JwtProvider jwtProvider;
     @MockitoBean
     private UserService userService;
     @Autowired
@@ -36,9 +38,18 @@ class UserControllerTest {
 
     @BeforeEach
     void setUp() {
-        createUserRequest = CreateUserRequest.builder().build();
-        updateUserRequest = UpdateUserRequest.builder().build();
-        userResponse = UserResponse.builder().build();
+        createUserRequest = CreateUserRequest.builder()
+                .name("Aditi")
+                .email("aditi@gmail.com")
+                .phone("07444444444")
+                .password("Test123456")
+                .build();
+        updateUserRequest = UpdateUserRequest.builder()
+                .name("A")
+                .phone("07444444444")
+                .build();
+        userResponse = UserResponse.builder()
+                .build();
     }
 
     @Test
@@ -53,16 +64,22 @@ class UserControllerTest {
 
     @Test
     void getUser() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/users/" + USER_ID))
+        String token = "123456";
+        when(jwtProvider.getUserId(token)).thenReturn(USER_ID);
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/users/" + USER_ID)
+                        .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk());
     }
 
     @Test
     void updateUser() throws Exception {
+        String token = "123456";
+        when(jwtProvider.getUserId(token)).thenReturn(USER_ID);
         mockMvc.perform(put("/v1/users/" + USER_ID)
                         .content(objectMapper.writeValueAsString(updateUserRequest))
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk());
-        verify(userService).updateUser(eq(USER_ID), any(UpdateUserRequest.class));
+        verify(userService).updateUser(USER_ID, updateUserRequest);
     }
 }

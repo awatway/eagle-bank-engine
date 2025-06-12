@@ -1,9 +1,11 @@
 package com.eagle.feature.account.web;
 
 import com.eagle.feature.account.service.BankAccountService;
+import com.eagle.feature.account.web.model.AccountType;
 import com.eagle.feature.account.web.model.BankAccountResponse;
 import com.eagle.feature.account.web.model.CreateBankAccountRequest;
 import com.eagle.feature.account.web.model.UpdateBankAccountRequest;
+import com.eagle.feature.auth.JwtProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +28,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(BankAccountController.class)
 class BankAccountControllerTest {
     @MockitoBean
+    private JwtProvider jwtProvider;
+    @MockitoBean
     private BankAccountService bankAccountService;
     @Autowired
     private MockMvc mockMvc;
@@ -36,17 +40,26 @@ class BankAccountControllerTest {
 
     @BeforeEach
     void setUp() {
-        createBankAccountRequest = CreateBankAccountRequest.builder().name("my account").build();
-        updateBankAccountRequest = UpdateBankAccountRequest.builder().name("updated account").build();
+        createBankAccountRequest = CreateBankAccountRequest.builder()
+                .name("my account")
+                .accountType(AccountType.PERSONAL)
+                .build();
+        updateBankAccountRequest = UpdateBankAccountRequest.builder()
+                .name("updated account")
+                .accountType(AccountType.PERSONAL)
+                .build();
         bankAccountResponse = BankAccountResponse.builder().build();
     }
 
     @Test
     void createAccount() throws Exception {
+        String token = "123456";
+        when(jwtProvider.getUserId(token)).thenReturn(USER_ID);
         when(bankAccountService.createAccount(eq(USER_ID), any(CreateBankAccountRequest.class))).thenReturn(bankAccountResponse);
         mockMvc.perform(post("/v1/accounts/user/" + USER_ID)
                         .content(objectMapper.writeValueAsString(createBankAccountRequest))
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk());
         verify(bankAccountService).createAccount(eq(USER_ID), any(CreateBankAccountRequest.class));
     }
